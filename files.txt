@@ -1,4 +1,0 @@
-repeat_command.js
-single_hack.js
-single_weaken.js
-single_grow.js
