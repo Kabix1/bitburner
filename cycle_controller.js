@@ -34,9 +34,11 @@ export async function main(ns) {
     var weakenTime = Math.round(ns.getWeakenTime(target));
     var growTime = Math.round(ns.getGrowTime(target));
 
+    // Initialize scripts
     ns.run("run_command.js", 1, "init", uuidv4());
-    ns.run("monitorScripts.js", 1, true, hackTime, weakenTime, growTime, weakenTime);
+    ns.run("monitor.js", 1, true, hackTime, weakenTime, growTime, weakenTime);
 
+    // Create a plan for scripts running order
     actionList.push(["single_hack.js", hackTime, threadsNeeded["hack"]]);
     actionList.push(["single_weaken.js", weakenTime - taskSeperation, threadsNeeded["weaken1"]]);
     actionList.push(["single_grow.js", growTime - 2 * taskSeperation, threadsNeeded["grow"]]);
@@ -60,30 +62,10 @@ export async function main(ns) {
         ns.kill(pid);
     }
     ns.exit();
-
-    //     var threadUsage = 0;
-    //     var waitTime = 0
-    //     for (var j = 0; j < 5; j++) {
-    //         for (let task of runTable) {
-    //             await ns.sleep(task[1] - waitTime);
-    //             waitTime = await runCommand(ns, task, server, target);
-    //         }
-    //         await ns.sleep(1000);
-    //     }
-    //        threadUsage += await hackTarget(ns, server, target, hackRatio);
-    //        threadUsage += growTarget(ns, server, target, maxMoney);
-    //        threadUsage += await weakenTarget(ns, server, target, minSecurity);
-    // getIncome(ns, threadUsage, startTime, target, hackRatio);
-    // await ns.sleep(5000);
-    // getIncome(ns, threadUsage, startTime, target, hackRatio);
-    // await ns.sleep(5000);
-    // getIncome(ns, threadUsage, startTime, target, hackRatio);
-    // await ns.sleep(5000);
-    // getIncome(ns, threadUsage, startTime, target, hackRatio);
 }
 
 
-export async function runCommand(ns, task, server, target) {
+export async function run_command(ns, task, server, target) {
     const minSecurity = ns.getServerMinSecurityLevel(target);
     var security = ns.getServerSecurityLevel(target);
     var waitTime = 0;

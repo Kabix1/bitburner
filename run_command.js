@@ -13,12 +13,12 @@ export async function main(ns) {
     }
     var threads = ns.args[1];
     var target = ns.args[2];
-    var pid = runCommand(ns, command, threads, target, uuidv4());
+    var pid = run_command(ns, command, threads, target, uuidv4());
     refreshServerList(ns);
-    ns.run("monitorScripts.js", 1, false, pid);
+    ns.run("monitor.js", 1, false, pid);
 }
 
-export function runCommand(ns, command, threadsNeeded, target) {
+export function run_command(ns, command, threadsNeeded, target) {
     for (let server of rootedServers) {
         if (server["threads"] >= threadsNeeded) {
             ns.printf("Running %s on %s with %s threads", command, server["host"], threadsNeeded);
@@ -47,3 +47,4 @@ export function uuidv4() {
 
 export function getAvailableThreads(ns, host) {
     return Math.floor((ns.getServerMaxRam(host) - ns.getServerUsedRam(host)) / threadCost);
+}

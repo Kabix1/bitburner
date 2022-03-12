@@ -5,9 +5,9 @@ export async function main(ns) {
     var target = "phantasy";
     const server = "evil-1PB-a2b0e551-4c29-4e46-b66c-c84c7d675ea9";
     ns.disableLog("sleep");
-    var pid = ns.exec("cycleController.js", "home", 1, target, 0, server);
+    var pid = ns.exec("cycle_controller.js", "home", 1, target, 0, server);
     waitForScript(ns, pid);
-    pid = ns.exec("cycleController.js", "home", 1, target, hackRatio, server);
+    pid = ns.exec("cycle_controller.js", "home", 1, target, hackRatio, server);
     await waitForScript(ns, pid);
 }
 

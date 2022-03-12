@@ -1,12 +1,14 @@
 {
+  "version": 0.0.1,
   "files": [
     "repeat_command.js",
     "single_hack.js",
     "single_weaken.js",
     "single_grow.js",
-    "cycleController.js",
-    "runCommand.js",
+    "cycle_controller.js",
+    "run_command.js",
     "head.js",
-    "worm.js"
+    "worm.js",
+    "monitor.js"
   ]
 }
