@@ -1,5 +1,5 @@
 {
-  "version": 0.0.1,
+  "version": "0.0.1",
   "files": [
     "repeat_command.js",
     "single_hack.js",
