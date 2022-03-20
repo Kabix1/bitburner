@@ -1,15 +1,11 @@
 /** @param {NS} ns **/
 
 import {prepareServers} from "worm.js";
-
-const threadCost = 1.7;
+import {exec, run} from "tools.js"
 
 export async function main(ns) {
-    const target = ns.args[0];
-    const hackRatio = ns.args[1];
-    const startServer = ns.args[2];
-    const taskSeperation = 100;
-    const period = 3000;
+    const [target, hackRatio, startServer, period, taskSeperation, port] = ns.args;
+    ns.clearPort(port);
     ns.disableLog("sleep");
     await ns.scp("single_hack.js", startServer);
     await ns.scp("single_weaken.js", startServer);
@@ -18,14 +14,14 @@ export async function main(ns) {
 
     await prepareServers(ns);
 
-    ns.killall(startServer);
     if (hackRatio == 0) {
         await weakenTarget(ns, startServer, target);
         await growTarget(ns, startServer, target);
         await weakenTarget(ns, startServer, target);
         ns.exit();
     }
-    var threadsNeeded = getCycleThreads(ns, target, hackRatio);
+
+    var threadsNeeded = await getCycleThreads(ns, target, hackRatio);
 
     let player = ns.getPlayer();
     let targetServer = ns.getServer(target);
@@ -35,8 +31,8 @@ export async function main(ns) {
     var growTime = Math.round(ns.getGrowTime(target));
 
     // Initialize scripts
-    ns.run("run_command.js", 1, "init", uuidv4());
-    ns.run("monitor.js", 1, true, hackTime, weakenTime, growTime, weakenTime);
+    run(ns, "run_command.js", 1, "init", uuidv4());
+    // run(ns, "monitor.js", 1, true, hackTime, weakenTime, growTime, weakenTime);
 
     // Create a plan for scripts running order
     actionList.push(["single_hack.js", hackTime, threadsNeeded["hack"]]);
@@ -44,14 +40,20 @@ export async function main(ns) {
     actionList.push(["single_grow.js", growTime - 2 * taskSeperation, threadsNeeded["grow"]]);
     actionList.push(["single_weaken.js", weakenTime - 3 * taskSeperation, threadsNeeded["weaken2"]]);
 
+    // actionList.push(["single_weaken.js", weakenTime, 1]);
+    // actionList.push(["single_weaken.js", weakenTime - taskSeperation, 2]);
+    // actionList.push(["single_weaken.js", weakenTime - 2 * taskSeperation, 3]);
+    // actionList.push(["single_weaken.js", weakenTime - 3 * taskSeperation, 4]);
+
     actionList.sort((a, b) => b[1] - a[1]);
     var runTable = [[actionList[0][0], 0, threadsNeeded["weaken1"]]];
     runTable = runTable.concat(actionList.slice(1).map((item, index) => { return [item[0], actionList[index][1] - item[1], item[2]]; }));
     var pids = [];
     for (let command of runTable) {
         await ns.sleep(command[1]);
-        pids.push(ns.run("repeat_command.js", 1, period, command[0], command[2], uuidv4(), target));
+        pids.push(run(ns, "repeat_command.js", 1, port, period, command[0], command[2], uuidv4(), target));
     }
+    run(ns, "monitor.js", 1, false, port, ...pids);
     await ns.sleep(3 * (hackTime + growTime + 2 * weakenTime));
     for (let pid of pids) {
         var income = ns.getScriptIncome(pid);
@@ -73,19 +75,26 @@ export async function run_command(ns, task, server, target) {
     return waitTime;
 }
 
-export function getCycleThreads(ns, target, hackRatio) {
-  if (ns.file)
+export async function getCycleThreads(ns, target, hackRatio) {
     var threadCount = {};
-    var targetServer = ns.getServer(target);
-    var player = ns.getPlayer();
-    targetServer.moneyAvailable = targetServer.moneyMax;
-    threadCount["hack"] = Math.max(Math.floor(hackRatio / ns.formulas.hacking.hackPercent(targetServer, player)), 1);
-    targetServer.moneyAvailable -= targetServer.moneyAvailable * ns.formulas.hacking.hackPercent(targetServer, player) * threadCount["hack"];
-    var moneyGrow = targetServer.moneyMax - targetServer.moneyAvailable;
-    threadCount["grow"] = Math.ceil(moneyGrow / (targetServer.moneyAvailable * (ns.formulas.hacking.growPercent(targetServer, 1, player) - 1)));
-    threadCount["weaken1"] = Math.ceil(ns.hackAnalyzeSecurity(threadCount["hack"]) / ns.weakenAnalyze(1));
-    threadCount["weaken2"] = Math.ceil(ns.growthAnalyzeSecurity(threadCount["grow"]) / ns.weakenAnalyze(1));
-    return threadCount;
+    if (ns.fileExists("Formulas.exe")) {
+        var targetServer = ns.getServer(target);
+        var player = ns.getPlayer();
+        targetServer.moneyAvailable = targetServer.moneyMax;
+        threadCount["hack"] = "test";
+        threadCount["hack"] = Math.max(Math.floor(hackRatio / ns.formulas.hacking.hackPercent(targetServer, player)), 1);
+        targetServer.moneyAvailable -= targetServer.moneyAvailable * ns.formulas.hacking.hackPercent(targetServer, player) * threadCount["hack"];
+        var moneyGrow = targetServer.moneyMax - targetServer.moneyAvailable;
+        threadCount["grow"] = Math.ceil(moneyGrow / (targetServer.moneyAvailable * (ns.formulas.hacking.growPercent(targetServer, 1, player) - 1)));
+        threadCount["weaken1"] = Math.ceil(ns.hackAnalyzeSecurity(threadCount["hack"]) / ns.weakenAnalyze(1));
+        threadCount["weaken2"] = Math.ceil(ns.growthAnalyzeSecurity(threadCount["grow"]) / ns.weakenAnalyze(1));
+        return threadCount;
+    } else {
+        threadCount["hack"] = await hackTarget(ns, server, target, hackRatio);
+        threadCount["weaken1"] = await weakenTarget(ns, server, target);
+        threadCount["grow"] = await growTarget(ns, server, target);
+        threadCount["weaken2"] = await weakenTarget(ns, server, target);
+    }
 }
 
 export function getIncome(ns, threadUsage, startTime, target, hackRatio) {
@@ -96,15 +105,15 @@ export function getIncome(ns, threadUsage, startTime, target, hackRatio) {
 }
 
 export function growExec(ns, server, target, threads) {
-    return ns.exec("single_grow.js", server, threads, target, uuidv4());
+    return exec(ns, "single_grow.js", server, threads, target, uuidv4());
 }
 
 export function weakenExec(ns, server, target, threads) {
-    return ns.exec("single_weaken.js", server, threads, target, uuidv4());
+    return exec(ns, "single_weaken.js", server, threads, target, uuidv4());
 }
 
 export function hackExec(ns, server, target, threads) {
-    return ns.exec("single_hack.js", server, threads, target, uuidv4());
+    return exec(ns, "single_hack.js", server, threads, target, uuidv4());
 }
 
 export async function growTarget(ns, server, target) {
@@ -114,7 +123,7 @@ export async function growTarget(ns, server, target) {
     var time = 0;
     if (threadsNeeded > 0) {
         time = ns.getGrowTime(target);
-        var pid = ns.exec("single_grow.js", server, threadsNeeded, target);
+        var pid = exec(ns, "single_grow.js", server, threadsNeeded, target);
         await waitForScript(ns, pid);
     }
     return threadsNeeded;
@@ -126,7 +135,7 @@ export async function weakenTarget(ns, server, target) {
     var threadsNeeded = Math.ceil((currSecurity - minSecurity) / ns.weakenAnalyze(1));
     var time = ns.getWeakenTime(target);
     if (threadsNeeded > 0) {
-        var pid = ns.exec("single_weaken.js", server, threadsNeeded, target);
+        var pid = exec(ns, "single_weaken.js", server, threadsNeeded, target);
         await waitForScript(ns, pid);
     }
     return threadsNeeded;
@@ -139,7 +148,7 @@ export async function hackTarget(ns, server, target, hackRatio) {
     var time = 0;
     var loops = 1;
     time = ns.getHackTime(target);
-    var pid = ns.exec("single_hack.js", server, threadsNeeded, target);
+    var pid = exec(ns, "single_hack.js", server, threadsNeeded, target);
     await waitForScript(ns, pid);
     currMoney = ns.getServerMoneyAvailable(target);
     return threadsNeeded;

@@ -1,29 +1,37 @@
 /** @param {NS} ns **/
 
 import {getServerList} from "worm.js";
+import {exec} from "tools.js"
 
 let rootedServers = [];
-const threadCost = 1.7;
+const threadCost = 1.75;
 
 export async function main(ns) {
+    ns.disableLog("ALL");
     var command = ns.args[0];
     if (command == "init") {
         refreshServerList(ns);
         return;
     }
-    var threads = ns.args[1];
-    var target = ns.args[2];
+    var port = ns.args[1];
+    var threads = ns.args[2];
+    var target = ns.args[3];
     var pid = run_command(ns, command, threads, target, uuidv4());
+    await ns.writePort(port, pid);
+    if (pid == 0) {
+        ns.printf("Failed to start script!");
+        ns.print(ns.getScriptLogs());
+        ns.print(rootedServers);
+        ns.print(ns.getServerMaxRam("evil-16384GB-744c99d4-d871-4dc8-b51a-b5a80a5e97b1")- ns.getServerUsedRam("evil-16384GB-744c99d4-d871-4dc8-b51a-b5a80a5e97b1"));
+    }
     refreshServerList(ns);
-    ns.run("monitor.js", 1, false, pid);
 }
 
 export function run_command(ns, command, threadsNeeded, target) {
     for (let server of rootedServers) {
         if (server["threads"] >= threadsNeeded) {
-            ns.printf("Running %s on %s with %s threads", command, server["host"], threadsNeeded);
             server["threads"] -= threadsNeeded;
-            return ns.exec(command, server["host"], threadsNeeded, target, uuidv4());
+            return exec(ns, command, server["host"], threadsNeeded, target, uuidv4());
         }
     }
 }

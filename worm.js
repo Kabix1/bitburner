@@ -12,7 +12,7 @@ export function getServerList(ns) {
 export function scanAll(ns, node, parent) {
 	var serverList = [node];
 	var adjServers = ns.scan(node).filter(host => host != parent);
-    await ns.sleep(100);
+
 	for (var j = 0; j < adjServers.length; j++) {
 		var nextHop = adjServers[j];
 		if (! ns.hasRootAccess(nextHop)) {

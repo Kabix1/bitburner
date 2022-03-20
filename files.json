@@ -1,6 +1,11 @@
 {
-  "version": "0.0.1",
+  "version": "0.0.248",
   "files": [
+    "main.js",
+    "calc_cycle_col.js",
+    "calc_income.js",
+    "time_test.js",
+    "kill_all.js",
     "repeat_command.js",
     "single_hack.js",
     "single_weaken.js",
@@ -9,6 +14,7 @@
     "run_command.js",
     "head.js",
     "worm.js",
+    "tools.js",
     "monitor.js"
   ]
 }
