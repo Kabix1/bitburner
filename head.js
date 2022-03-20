@@ -36,19 +36,3 @@ export function chooseTarget(ns, maxCost) {
     serverInfo.sort((a, b) => b.income - a.income);
     return serverInfo[0];
 }
-
-export async function monitorServer(ns, server, pid) {
-    var script = ns.getRunningScript(pid);
-    var pidsOnServer = new Set();
-    while (script != null) {
-        script = ns.getRunningScript(pid);
-        var ps = ns.ps(server);
-        for (let script of ps) {
-            if (!pidsOnServer.has(script.pid)) {
-                ns.tprint(ns.getRunningScript(script.pid).logs);
-                pidsOnServer.add(script.pid);
-            }
-        }
-        await ns.sleep(100);
-    }
-}
