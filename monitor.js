@@ -31,27 +31,8 @@ export function createScriptSignature(script) {
     return script.filename + ":" + script.threads;
 }
 
-export function getRefOfRunningScript(ns, pid) {
-    var script = ns.getRunningScript(pid);
-    var ref = {fn: script.filename,
-               host: script.server,
-               args: script.args};
-    return ref;
-}
-
-export function getRefsFromLogs(logs) {
-    return logs.map(x => JSON.parse(x).ref);
-}
-
 export function getLogs(ns, ref) {
     return ns.getScriptLogs(ref.fn, ref.host, ...ref.args);
-}
-
-export function getStartedCommands(ns, pid) {
-    var logs = ns.getRunningScript(pid).logs.map(JSON.parse);
-    ns.tprintf("%s, %s, %s", pid, logs[0].args[1], logs[0].pid);
-    var pids = logs.map(x => x.pid);
-    return pids;
 }
 
 export async function waitForLogs(ns, pid) {
@@ -95,40 +76,4 @@ export function getRuntimeFromLog(log) {
     }
     var runtime = Math.ceil((seconds + 60 * minutes) * 1000);
     return runtime;
-    // var scriptEnd = now + ms - 1000 * script.onlineRunningTime;
-    // // ns.tprintf("%s: Time: %s, Script running time: %s Script ending time: %s", threads, now, script.onlineRunningTime, scriptEnd);
-    //  if (!scriptRuntimes.includes(ms) && ! scriptRuntimes.includes(ms + 1)) {
-    //      ns.tprintf("Wrong runtime!! %s not in list", ms);
-    //      ns.tprint(scriptRuntimes);
-    //  }
-    // if (cycles.length == 0 || cycles[cycles.length - 1].hasOwnProperty(threads)) {
-    //     cycles.push({});
-    //     cycles[cycles.length - 1][threads] = scriptEnd;
-    // } else {
-    //     for (let cycle of cycles) {
-    //         if (! cycle.hasOwnProperty(threads)) {
-    //             cycle[threads] = scriptEnd;
-    //             let size = Object.keys(cycle).length;
-    //             if (size == 4) {
-    //                 printCycle(ns, cycle);
-    //             }
-    //             break;
-    //         }
-    //     }
-    // }
-}
-
-export function printCycle(ns, cycle) {
-    var endTimes = Object.values(cycle);
-    endTimes.sort((a, b) => a - b);
-//    ns.tprint(endTimes);
-    var endDiffs = endTimes.slice(1).map((item, index) => { return [item - endTimes[index]];});
-//    ns.tprint(cycle);
-    ns.tprint(endDiffs);
-}
-
-export async function monitorScripts(ns) {
-    while (true) {
-        await ns.sleep(50);
-    }
 }
