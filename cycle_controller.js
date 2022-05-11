@@ -49,11 +49,12 @@ export async function main(ns) {
     var runTable = [[actionList[0][0], 0, threadsNeeded["weaken1"]]];
     runTable = runTable.concat(actionList.slice(1).map((item, index) => { return [item[0], actionList[index][1] - item[1], item[2]]; }));
     var pids = [];
+    run(ns, "monitor.js", 1, false, port);
     for (let command of runTable) {
         await ns.sleep(command[1]);
         pids.push(run(ns, "repeat_command.js", 1, port, period, command[0], command[2], uuidv4(), target));
+        await ns.writePort(port, JSON.stringify({type: "repeater", pid: pids[pids.length - 1]}));
     }
-    run(ns, "monitor.js", 1, false, port, ...pids);
     await ns.sleep(3 * (hackTime + growTime + 2 * weakenTime));
     for (let pid of pids) {
         var income = ns.getScriptIncome(pid);

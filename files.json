@@ -1,5 +1,5 @@
 {
-  "version": "0.0.248",
+  "version": "0.0.285",
   "files": [
     "main.js",
     "calc_cycle_col.js",
@@ -15,6 +15,7 @@
     "head.js",
     "worm.js",
     "tools.js",
+    "tests.js",
     "monitor.js"
   ]
 }

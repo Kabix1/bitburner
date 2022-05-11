@@ -4,12 +4,22 @@ const timeRe = /(?<minutes>[0-9]+)?( minutes)? (?<seconds>[0-9\.]+) seconds \(t=
 
 export async function main(ns) {
     ns.disableLog("ALL");
-    const [isHead, port, ...pids] = ns.args;
+    const [isHead, port] = ns.args;
+    var countActivations = {};
     let scriptRuntimes = {};
+    var pids = [];
     while(true) {
-        var singlePid = ns.readPort(port);
-        if(singlePid == "NULL PORT DATA") {
+        let data = ns.readPort(port);
+        var singlePid = 0;
+        if(data == "NULL PORT DATA") {
             await ns.sleep(200);
+            continue;
+        }
+        data = JSON.parse(data);
+        if(data.type == "single") {
+            singlePid = data.pid;
+        } else if(data.type == "repeater") {
+            pids.push(data.pid);
             continue;
         }
         var log = await waitForLogs(ns, singlePid);
@@ -18,11 +28,15 @@ export async function main(ns) {
         let runtime = getRuntimeFromLog(log[0]);
         if(! scriptRuntimes.hasOwnProperty(sig)) {
             scriptRuntimes[sig] = runtime;
+            countActivations[sig] = 1;
             ns.print(scriptRuntimes);
         } else if (scriptRuntimes[sig] != runtime)  {
+            ns.print(countActivations);
             ns.printf("Wrong runtime!!  %s, %s Have to kill this run", runtime, sig);
             pids.forEach(x => ns.kill(x));
             ns.exit();
+        } else {
+            countActivations[sig]++;
         }
     }
 }

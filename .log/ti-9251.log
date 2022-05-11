@@ -1,0 +1,40 @@
+[11:33:52.283] Global cache location '/home/olle/.cache/typescript/4.6', safe file path '/home/olle/.emacs.d/.local/etc/lsp/npm/typescript/lib/node_modules/typescript/lib/typingSafeList.json', types map path /home/olle/.emacs.d/.local/etc/lsp/npm/typescript/lib/node_modules/typescript/lib/typesMap.json
+[11:33:52.283] Processing cache location '/home/olle/.cache/typescript/4.6'
+[11:33:52.284] Trying to find '/home/olle/.cache/typescript/4.6/package.json'...
+[11:33:52.285] Loaded content of '/home/olle/.cache/typescript/4.6/package.json': {"private":true,"dependencies":{"types-registry":"^0.1.585"}}
+[11:33:52.285] Loaded content of '/home/olle/.cache/typescript/4.6/package-lock.json'
+[11:33:52.285] Finished processing cache location '/home/olle/.cache/typescript/4.6'
+[11:33:52.285] Process id: 9258
+[11:33:52.285] NPM location: /home/olle/.nvm/versions/node/v17.8.0/bin/npm (explicit '--npmLocation' not  provided)
+[11:33:52.285] validateDefaultNpmLocation: false
+[11:33:52.285] Npm config file: /home/olle/.cache/typescript/4.6/package.json
+[11:33:52.285] Updating types-registry npm package...
+[11:33:52.286] Exec: /home/olle/.nvm/versions/node/v17.8.0/bin/npm install --ignore-scripts types-registry@latest
+[11:33:52.898]     Succeeded. stdout:
+    
+    up to date, audited 2 packages in 508ms
+
+found 0 vulnerabilities
+
+[11:33:52.899] Updated types-registry npm package
+[11:33:52.943] Got install request {"projectName":"/dev/null/inferredProject1*","fileNames":["/home/olle/.emacs.d/.local/etc/lsp/npm/typescript/lib/node_modules/typescript/lib/lib.es5.d.ts","/home/olle/.emacs.d/.local/etc/lsp/npm/typescript/lib/node_modules/typescript/lib/lib.es2015.d.ts","/home/olle/.emacs.d/.local/etc/lsp/npm/typescript/lib/node_modules/typescript/lib/lib.es2016.d.ts","/home/olle/.emacs.d/.local/etc/lsp/npm/typescript/lib/node_modules/typescript/lib/lib.dom.d.ts","/home/olle/.emacs.d/.local/etc/lsp/npm/typescript/lib/node_modules/typescript/lib/lib.dom.iterable.d.ts","/home/olle/.emacs.d/.local/etc/lsp/npm/typescript/lib/node_modules/typescript/lib/lib.webworker.importscripts.d.ts","/home/olle/.emacs.d/.local/etc/lsp/npm/typescript/lib/node_modules/typescript/lib/lib.scripthost.d.ts","/home/olle/.emacs.d/.local/etc/lsp/npm/typescript/lib/node_modules/typescript/lib/lib.es2015.core.d.ts","/home/olle/.emacs.d/.local/etc/lsp/npm/typescript/lib/node_modules/typescript/lib/lib.es2015.collection.d.ts","/home/olle/.emacs.d/.local/etc/lsp/npm/typescript/lib/node_modules/typescript/lib/lib.es2015.generator.d.ts","/home/olle/.emacs.d/.local/etc/lsp/npm/typescript/lib/node_modules/typescript/lib/lib.es2015.iterable.d.ts","/home/olle/.emacs.d/.local/etc/lsp/npm/typescript/lib/node_modules/typescript/lib/lib.es2015.promise.d.ts","/home/olle/.emacs.d/.local/etc/lsp/npm/typescript/lib/node_modules/typescript/lib/lib.es2015.proxy.d.ts","/home/olle/.emacs.d/.local/etc/lsp/npm/typescript/lib/node_modules/typescript/lib/lib.es2015.reflect.d.ts","/home/olle/.emacs.d/.local/etc/lsp/npm/typescript/lib/node_modules/typescript/lib/lib.es2015.symbol.d.ts","/home/olle/.emacs.d/.local/etc/lsp/npm/typescript/lib/node_modules/typescript/lib/lib.es2015.symbol.wellknown.d.ts","/home/olle/.emacs.d/.local/etc/lsp/npm/typescript/lib/node_modules/typescript/lib/lib.es2016.array.include.d.ts","/home/olle/.emacs.d/.local/etc/lsp/npm/typescript/lib/node_modules/typescript/lib/lib.es2016.full.d.ts","/home/olle/git/bitburner/head.js"],"compilerOptions":{"module":1,"target":3,"jsx":1,"allowJs":true,"allowSyntheticDefaultImports":true,"allowNonTsExtensions":true,"noEmitForJsFiles":true,"maxNodeModuleJsDepth":2},"typeAcquisition":{"enable":true,"include":[],"exclude":[]},"unresolvedImports":["calc_cycle_col.js","calc_income.js","tools.js","worm.js"],"projectRootPath":"/home/olle/git/bitburner","kind":"discover"}
+[11:33:52.956] Loaded safelist from types map file '/home/olle/.emacs.d/.local/etc/lsp/npm/typescript/lib/node_modules/typescript/lib/typesMap.json'
+[11:33:52.957] Explicitly included types: []
+[11:33:52.957] Inferred typings from unresolved imports: ["calc_cycle_col.js","calc_income.js","tools.js","worm.js"]
+[11:33:52.957] Result: {"cachedTypingPaths":[],"newTypingNames":["calc_cycle_col.js","calc_income.js","tools.js","worm.js"],"filesToWatch":["/home/olle/git/bitburner/bower_components","/home/olle/git/bitburner/node_modules"]}
+[11:33:52.957] Finished typings discovery: {"cachedTypingPaths":[],"newTypingNames":["calc_cycle_col.js","calc_income.js","tools.js","worm.js"],"filesToWatch":["/home/olle/git/bitburner/bower_components","/home/olle/git/bitburner/node_modules"]}
+[11:33:52.958] DirectoryWatcher:: Added:: WatchInfo: /home/olle/git/bitburner/bower_components
+[11:33:52.958] DirectoryWatcher:: Added:: WatchInfo: /home/olle/git/bitburner/bower_components 1 undefined Project: /dev/null/inferredProject1* watcher already invoked: false
+[11:33:52.959] Elapsed:: 1.0890000015497208ms DirectoryWatcher:: Added:: WatchInfo: /home/olle/git/bitburner/bower_components 1 undefined Project: /dev/null/inferredProject1* watcher already invoked: false
+[11:33:52.959] DirectoryWatcher:: Added:: WatchInfo: /home/olle/git/bitburner/node_modules
+[11:33:52.959] DirectoryWatcher:: Added:: WatchInfo: /home/olle/git/bitburner/node_modules 1 undefined Project: /dev/null/inferredProject1* watcher already invoked: false
+[11:33:52.959] Elapsed:: 0.08480000495910645ms DirectoryWatcher:: Added:: WatchInfo: /home/olle/git/bitburner/node_modules 1 undefined Project: /dev/null/inferredProject1* watcher already invoked: false
+[11:33:52.959] Installing typings ["calc_cycle_col.js","calc_income.js","tools.js","worm.js"]
+[11:33:52.960] 'calc_cycle_col.js':: Entry for package 'calc_cycle_col.js' does not exist in local types registry - skipping...
+[11:33:52.960] 'calc_income.js':: Entry for package 'calc_income.js' does not exist in local types registry - skipping...
+[11:33:52.960] 'tools.js':: Entry for package 'tools.js' does not exist in local types registry - skipping...
+[11:33:52.960] 'worm.js':: Entry for package 'worm.js' does not exist in local types registry - skipping...
+[11:33:52.960] All typings are known to be missing or invalid - no need to install more typings
+[11:33:52.960] Sending response:
+    {"projectName":"/dev/null/inferredProject1*","typeAcquisition":{"enable":true,"include":[],"exclude":[]},"compilerOptions":{"module":1,"target":3,"jsx":1,"allowJs":true,"allowSyntheticDefaultImports":true,"allowNonTsExtensions":true,"noEmitForJsFiles":true,"maxNodeModuleJsDepth":2},"typings":[],"unresolvedImports":["calc_cycle_col.js","calc_income.js","tools.js","worm.js"],"kind":"action::set"}
+[11:33:52.960] Response has been sent.

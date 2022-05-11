@@ -1,35 +1,54 @@
 /** @param {NS} ns **/
 
 export async function main(ns) {
-  var target = "phantasy";
-  const period = 2990;
-  const taskSeperation = 50;
-
-  ns.tprint("Collisions for hack");
-  var hackTime = Math.round(ns.getHackTime(target));
-  findCollisions(ns, period, hackTime, taskSeperation * 3, [taskSeperation, 2 * taskSeperation]);
-  ns.tprint("Collisions for weaken");
-  var weakenTime = Math.round(ns.getWeakenTime(target));
- // findCollisions(ns, period, weakenTime, taskSeperation);
-  ns.tprint("Collisions for grow");
-  var growTime = Math.round(ns.getGrowTime(target));
-  findCollisions(ns, period, growTime, taskSeperation);
-
 }
 
-export function findCollisions(ns, period, time, badInterval, safeInterval) {
-  var drift = time % period;
-  var cyclePos = drift;
-  for(var i = 0; i < 100; i++) {
-    var diff = period - cyclePos;
-    if (diff < badInterval) {
-      if (safeInterval != undefined && diff > safeInterval[0] && diff < safeInterval[1]) {
-        continue;
-      }
-      ns.tprintf("Possible collision on cycle %s, %s", i, cyclePos);
+export function findPeriod(ns, target, taskSeperation) {
+  var hackTime = Math.round(ns.getHackTime(target));
+  var weakenTime = Math.round(ns.getWeakenTime(target));
+  var growTime = Math.round(ns.getGrowTime(target));
+  for(var period = 2500; period < 7000; period+=10) {
+    let growCollision = findCollision(ns, period, growTime, [[taskSeperation, 2*taskSeperation], [period - taskSeperation, period]]);
+    let hackCollision = findCollision(ns, period, hackTime, [[period - taskSeperation, period], [period - 3*taskSeperation, period - 2*taskSeperation]]);
+    if(! (growCollision || hackCollision)) {
+      return period;
     }
-    cyclePos += drift;
-    cyclePos %= period;
   }
+  return false;
+}
 
+export function getCollisions(ns, period, target, sep) {
+  var hackTime = Math.round(ns.getHackTime(target));
+  var weakenTime = Math.round(ns.getWeakenTime(target));
+  var growTime = Math.round(ns.getGrowTime(target));
+  let growCollision = findCollision(ns, period, growTime,
+                                    [[sep, 2*sep],
+                                     [period - sep, period]]);
+  let hackCollision = findCollision(ns, period, hackTime,
+                                    [[period - sep, period],
+                                     [period - 3*sep, period - 2*sep]]);
+  let weakenCollision = findCollision(ns, period, weakenTime,
+                                      [[0 , sep], [2 * sep , 3 * sep],
+                                       [period - 2*sep, period - sep]]);
+  return [growCollision, hackCollision, weakenCollision];
+}
+
+export function findCollision(ns, period, time, badIntervals) {
+  var drift = time % period;
+  var pos = drift;
+  for(var i = 1; i < 1000; i++) {
+    var diff = period - pos;
+    if (badIntervals.map(x => inInterval(x, pos)).reduce((a, b) => a || b)) {
+      ns.tprint(badIntervals.map(x => inInterval(x, pos)));
+      ns.tprint(pos, badIntervals);
+      return i;
+    }
+    pos += drift;
+    pos %= period;
+  }
+  return false;
+}
+
+export function inInterval(interval, time) {
+  return time >= interval[0] && time <= interval[1];
 }

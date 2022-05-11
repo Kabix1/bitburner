@@ -17,7 +17,7 @@ export async function main(ns) {
     var threads = ns.args[2];
     var target = ns.args[3];
     var pid = run_command(ns, command, threads, target, uuidv4());
-    await ns.writePort(port, pid);
+    await ns.writePort(port, JSON.stringify({type: "single", pid: pid}));
     if (pid == 0) {
         ns.printf("Failed to start script!");
         ns.print(ns.getScriptLogs());
