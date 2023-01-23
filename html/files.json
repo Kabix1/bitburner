@@ -1,5 +1,5 @@
 {
-  "version": "0.0.285",
+  "hash": "sdfd",
   "files": [
     "main.js",
     "calc_cycle_col.js",
@@ -16,6 +16,13 @@
     "worm.js",
     "tools.js",
     "tests.js",
-    "monitor.js"
+    "monitor.js",
+    "full_scan.js",
+    "scan_money.js",
+    "low_RAM.js",
+    "prepare_target.js",
+    "buy_servers.js",
+    "ram_need.js",
+    "best_targets.js"
   ]
 }
